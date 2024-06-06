@@ -8,6 +8,7 @@ const port = process.env.PORT || 5000;
 app.use(
   cors({
     origin: ["http://localhost:5173"],
+    credentials: true,
   })
 );
 app.use(express.json());
@@ -33,6 +34,11 @@ async function run() {
     const userCollection = client.db("petLoverDb").collection("users");
 
     // user related apis
+    app.get("/users", async (req, res) => {
+      const result = await userCollection.find().toArray();
+      res.send(result);
+    });
+
     app.post("/users", async (req, res) => {
       const user = req.body;
       const query = { email: user.email };
