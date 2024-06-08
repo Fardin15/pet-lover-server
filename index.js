@@ -144,12 +144,12 @@ async function run() {
     });
 
     // delete pet from database
-    // app.delete("/pet/:id", verifyToken, async (req, res) => {
-    //   const id = req.params.id;
-    //   const query = { _id: new ObjectId(id) };
-    //   const result = await petsCollection.deleteOne(query);
-    //   res.send(result);
-    // });
+    app.delete("/pet/:id", verifyToken, async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await petsCollection.deleteOne(query);
+      res.send(result);
+    });
 
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
