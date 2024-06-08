@@ -122,8 +122,16 @@ async function run() {
 
     // --------------------------pet related apis-------------------
 
-    // get pet
-    app.get("/pets", async (req, res) => {
+    // get pets data by email
+    app.get("/my-pets/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const result = await petsCollection.find(query).toArray();
+      res.send(result);
+    });
+
+    // get all pet
+    app.get("/pets", verifyToken, async (req, res) => {
       const result = await petsCollection.find().toArray();
       res.send(result);
     });
@@ -134,6 +142,14 @@ async function run() {
       const result = await petsCollection.insertOne(pet);
       res.send(result);
     });
+
+    // delete pet from database
+    // app.delete("/pet/:id", verifyToken, async (req, res) => {
+    //   const id = req.params.id;
+    //   const query = { _id: new ObjectId(id) };
+    //   const result = await petsCollection.deleteOne(query);
+    //   res.send(result);
+    // });
 
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
