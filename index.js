@@ -130,7 +130,7 @@ async function run() {
       res.send(result);
     });
 
-    // get all pet
+    // get all pet for admin
     app.get("/pets", verifyToken, async (req, res) => {
       const result = await petsCollection.find().toArray();
       res.send(result);
@@ -140,6 +140,35 @@ async function run() {
     app.post("/pets", async (req, res) => {
       const pet = req.body;
       const result = await petsCollection.insertOne(pet);
+      res.send(result);
+    });
+
+    // get data for the pet wants to update
+    app.get("/pet/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await petsCollection.findOne(query);
+      res.send(result);
+    });
+
+    // update pet
+    app.patch("/pet/:id", verifyToken, async (req, res) => {
+      const item = req.body;
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          name: item.name,
+          category: item.category,
+          image: item.image,
+          postDate: item.postDate,
+          age: item.age,
+          location: item.location,
+          shortDescription: item.shortDescription,
+          longDescription: item.longDescription,
+        },
+      };
+      const result = await petsCollection.updateOne(filter, updateDoc);
       res.send(result);
     });
 
