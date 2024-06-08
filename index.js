@@ -73,11 +73,13 @@ async function run() {
       next();
     };
 
+    // get user
     app.get("/users", verifyToken, verifyAdmin, async (req, res) => {
       const result = await userCollection.find().toArray();
       res.send(result);
     });
 
+    // check admin
     app.get("/users/admin/:email", verifyToken, async (req, res) => {
       const email = req.params.email;
       if (email !== req.decoded.email) {
@@ -92,6 +94,7 @@ async function run() {
       res.send({ admin });
     });
 
+    // post user
     app.post("/users", async (req, res) => {
       const user = req.body;
       const query = { email: user.email };
@@ -103,6 +106,7 @@ async function run() {
       res.send(result);
     });
 
+    // add as admin
     app.patch(
       "/users/admin/:id",
       verifyToken,
@@ -115,6 +119,21 @@ async function run() {
         res.send(result);
       }
     );
+
+    // --------------------------pet related apis-------------------
+
+    // get pet
+    app.get("/pets", async (req, res) => {
+      const result = await petsCollection.find().toArray();
+      res.send(result);
+    });
+
+    // post pet
+    app.post("/pets", async (req, res) => {
+      const pet = req.body;
+      const result = await petsCollection.insertOne(pet);
+      res.send(result);
+    });
 
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
