@@ -32,13 +32,14 @@ async function run() {
     // await client.connect();
 
     const petsCollection = client.db("petLoverDb").collection("pets");
+    const adoptionCollection = client.db("petLoverDb").collection("adoption");
     const userCollection = client.db("petLoverDb").collection("users");
 
     // ---------------------jwt related apis-------------------
     app.post("/jwt", async (req, res) => {
       const user = req.body;
       const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: "1h",
+        expiresIn: "365d",
       });
       res.send({ token });
     });
@@ -177,6 +178,15 @@ async function run() {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await petsCollection.deleteOne(query);
+      res.send(result);
+    });
+
+    // -----------------------------request for adoption apis---------------
+
+    // request pet
+    app.post("/adoption", async (req, res) => {
+      const pet = req.body;
+      const result = await adoptionCollection.insertOne(pet);
       res.send(result);
     });
 
