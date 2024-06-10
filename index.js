@@ -206,6 +206,24 @@ async function run() {
       res.send(result);
     });
 
+    // accept from my added pets
+    app.patch("/adoption/adopted/:id", verifyToken, async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = { $set: { adoptionStatus: true } };
+      const result = await petsCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    });
+
+    // accept from my adoption request
+    app.patch("/reqAdoption/reqAdopted/:id", verifyToken, async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = { $set: { adoptionStatus: true } };
+      const result = await adoptionCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
     console.log(
