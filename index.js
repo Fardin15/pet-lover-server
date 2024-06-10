@@ -227,6 +227,21 @@ async function run() {
     });
 
     // --------------------------campaign related apis-------------------
+
+    // get all campaigns data
+    app.get("/campaigns", async (req, res) => {
+      const result = await campaignCollection.find().toArray();
+      res.send(result);
+    });
+
+    // get data for the pet wants to update
+    app.get("/campaign-details/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await campaignCollection.findOne(query);
+      res.send(result);
+    });
+
     // post campaign in database
     app.post("/campaign", async (req, res) => {
       const pet = req.body;
