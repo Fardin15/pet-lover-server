@@ -33,6 +33,7 @@ async function run() {
 
     const petsCollection = client.db("petLoverDb").collection("pets");
     const adoptionCollection = client.db("petLoverDb").collection("adoption");
+    const campaignCollection = client.db("petLoverDb").collection("campaign");
     const userCollection = client.db("petLoverDb").collection("users");
 
     // ---------------------jwt related apis-------------------
@@ -153,10 +154,11 @@ async function run() {
     });
 
     // update pet
-    app.patch("/pet/:id", verifyToken, async (req, res) => {
+    app.put("/pet/:id", async (req, res) => {
       const item = req.body;
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
       const updateDoc = {
         $set: {
           name: item.name,
@@ -169,7 +171,7 @@ async function run() {
           longDescription: item.longDescription,
         },
       };
-      const result = await petsCollection.updateOne(filter, updateDoc);
+      const result = await petsCollection.updateOne(filter, updateDoc, options);
       res.send(result);
     });
 
@@ -183,7 +185,7 @@ async function run() {
 
     // -----------------------------request for adoption apis---------------
 
-    // request pet
+    // post request pet
     app.post("/adoption", async (req, res) => {
       const pet = req.body;
       const result = await adoptionCollection.insertOne(pet);
@@ -223,6 +225,55 @@ async function run() {
       const result = await adoptionCollection.updateOne(filter, updateDoc);
       res.send(result);
     });
+
+    // --------------------------campaign related apis-------------------
+    // post campaign in database
+    app.post("/campaign", async (req, res) => {
+      const pet = req.body;
+      const result = await campaignCollection.insertOne(pet);
+      res.send(result);
+    });
+
+    // get campaigns date
+    app.get("/campaign/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { ownerEmail: email };
+      const result = await campaignCollection.find(query).toArray();
+      res.send(result);
+    });
+
+    // get data for the campaign wants to update
+    app.get("/campaign-res/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await campaignCollection.findOne(query);
+      res.send(result);
+    });
+
+    // update campaign
+    // app.put("/update-campaign/:id", async (req, res) => {
+    //   const item = req.body;
+    //   const id = req.params.id;
+    //   const filter = { _id: new ObjectId(id) };
+    //   const options = { upsert: true };
+    //   const updateDoc = {
+    //     $set: {
+    //       petName: item.petName,
+    //       maxAmount: item.maxAmount,
+    //       highAmount: item.highAmount,
+    //       shortDescription: item.shortDescription,
+    //       longDescription: item.longDescription,
+    //       deadline: item.deadline,
+    //       image: item.image,
+    //     },
+    //   };
+    //   const result = await campaignCollection.updateOne(
+    //     filter,
+    //     updateDoc,
+    //     options
+    //   );
+    //   res.send(result);
+    // });
 
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
