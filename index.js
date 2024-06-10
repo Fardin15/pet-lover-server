@@ -190,6 +190,14 @@ async function run() {
       res.send(result);
     });
 
+    // get request for adoption pet
+    app.get("/adoption/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { ownerEmail: email };
+      const result = await adoptionCollection.find(query).toArray();
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
     console.log(
