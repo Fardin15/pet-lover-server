@@ -251,29 +251,29 @@ async function run() {
     });
 
     // update campaign
-    // app.put("/update-campaign/:id", async (req, res) => {
-    //   const item = req.body;
-    //   const id = req.params.id;
-    //   const filter = { _id: new ObjectId(id) };
-    //   const options = { upsert: true };
-    //   const updateDoc = {
-    //     $set: {
-    //       petName: item.petName,
-    //       maxAmount: item.maxAmount,
-    //       highAmount: item.highAmount,
-    //       shortDescription: item.shortDescription,
-    //       longDescription: item.longDescription,
-    //       deadline: item.deadline,
-    //       image: item.image,
-    //     },
-    //   };
-    //   const result = await campaignCollection.updateOne(
-    //     filter,
-    //     updateDoc,
-    //     options
-    //   );
-    //   res.send(result);
-    // });
+    app.put("/update-campaign/:id", async (req, res) => {
+      const item = req.body;
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: {
+          petName: item.petName,
+          maxAmount: item.maxAmount,
+          highAmount: item.highAmount,
+          shortDescription: item.shortDescription,
+          longDescription: item.longDescription,
+          deadline: item.deadline,
+          image: item.image,
+        },
+      };
+      const result = await campaignCollection.updateOne(
+        filter,
+        updateDoc,
+        options
+      );
+      res.send(result);
+    });
 
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
